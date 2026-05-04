@@ -1,0 +1,67 @@
+---
+import siteConfig from "@data/site.config";
+
+const { pageTitle, metaDescription, metaTags, metaImage } = Astro.props;
+
+const titleSeparator = "·";
+const fullTitle = pageTitle
+  ? `${pageTitle} ${titleSeparator} ${siteConfig.name}`
+  : siteConfig.name;
+
+const description = metaDescription ?? siteConfig.description;
+const keywords = Array.isArray(metaTags)
+  ? metaTags.join(", ")
+  : (metaTags ?? siteConfig.keywords);
+
+const ogImage = metaImage ?? siteConfig.metaImage;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const socialImageURL = ogImage ? new URL(ogImage, Astro.site) : null;
+
+const schemaData = {
+  "@context": "https://schema.org",
+  "@type": siteConfig.schemaType ?? "LocalBusiness",
+  "name": siteConfig.name,
+  "description": siteConfig.description,
+  "url": Astro.site?.toString(),
+  ...(siteConfig.phone && { "telephone": siteConfig.phone }),
+  ...(siteConfig.address && {
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": siteConfig.address,
+      "addressCountry": "FR"
+    }
+  }),
+  ...(socialImageURL && { "image": socialImageURL.toString() }),
+  ...(siteConfig.priceRange && { "priceRange": siteConfig.priceRange }),
+  ...(siteConfig.openingHours && { "openingHours": siteConfig.openingHours }),
+  "sameAs": Object.values(siteConfig.social).filter(Boolean),
+};
+---
+
+<meta name="description" content={description} />
+<meta name="keywords" content={keywords} />
+
+<!-- Canonical -->
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:locale" content={siteConfig.ogLocale} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+{socialImageURL && <meta property="og:image" content={socialImageURL} />}
+
+<!-- Twitter / X -->
+<meta
+  name="twitter:card"
+  content={socialImageURL ? "summary_large_image" : "summary"}
+/>
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+{socialImageURL && <meta name="twitter:image" content={socialImageURL} />}
+
+<title>{fullTitle}</title>
+
+<!-- Schema.org LocalBusiness -->
+<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />

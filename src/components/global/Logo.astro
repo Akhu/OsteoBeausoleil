@@ -1,0 +1,33 @@
+---
+import siteConfig from "@data/site.config";
+---
+
+<a
+  href="/"
+  class="flex items-center gap-2 group"
+  aria-label={`${siteConfig.name} — Accueil`}
+>
+  <!-- Leaf icon -->
+  <svg class="w-7 h-7 text-brand-500 flex-shrink-0" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+    <path
+      d="M14 4C14 4 6 8 6 16C6 20.4 9.6 24 14 24C18.4 24 22 20.4 22 16C22 8 14 4 14 4Z"
+      fill="currentColor"
+      opacity="0.2"
+    />
+    <path
+      d="M14 4C14 4 6 8 6 16C6 20.4 9.6 24 14 24C18.4 24 22 20.4 22 16C22 8 14 4 14 4Z"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M14 24V12"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+    />
+  </svg>
+  <span class="font-title text-lg text-brand-900 group-hover:text-brand-600 transition-colors">
+    {siteConfig.name}
+  </span>
+</a>

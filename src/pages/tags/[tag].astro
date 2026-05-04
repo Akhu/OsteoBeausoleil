@@ -1,0 +1,64 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PostCard from "@components/blog/PostCard.astro";
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+
+  // Collect all unique tags
+  const allTags = [...new Set(allPosts.flatMap((post) => post.data.tags))];
+
+  return allTags.map((tag) => {
+    const filtered = allPosts
+      .filter((post) => post.data.tags.includes(tag))
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+    return {
+      params: { tag },
+      props: { tag, posts: filtered },
+    };
+  });
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout
+  pageTitle={`#${tag}`}
+  metaDescription={`Articles taggés "${tag}"`}
+>
+  <div class="py-12">
+    <a
+      href="/blog/1/"
+      class="inline-flex items-center gap-1 text-sm text-brand-600 dark:text-brand-400 hover:underline mb-8 group"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+      </svg>
+      Tous les articles
+    </a>
+
+    <h1 class="text-3xl font-title font-bold mb-2 text-slate-900 dark:text-white">
+      #{tag}
+    </h1>
+    <p class="text-slate-500 dark:text-slate-400 mb-10">
+      {posts.length} article{posts.length > 1 ? "s" : ""}
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        posts.map((post) => (
+          <PostCard
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            url={`/blog/${post.slug}/`}
+            tags={post.data.tags}
+            image={post.data.image}
+          />
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>

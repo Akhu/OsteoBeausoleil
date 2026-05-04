@@ -1,0 +1,72 @@
+/*
+  GLOBAL STYLES
+  Fonts loaded via Google Fonts in BaseLayout <head>.
+  Swap families in tailwind.config.cjs + BaseLayout as needed.
+*/
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------
+   Scroll animations (data-reveal + IntersectionObserver)
+   --------------------------------------------------------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Scroll progress bar */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: theme('colors.brand.500');
+  z-index: 9999;
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+/* ---------------------------------------------------------
+   Mobile hamburger menu
+   --------------------------------------------------------- */
+.hamburger {
+  padding-right: 20px;
+  cursor: pointer;
+}
+
+.hamburger .line {
+  display: block;
+}
+
+/* ---------------------------------------------------------
+   Prose (blog articles) tweaks
+   --------------------------------------------------------- */
+@layer components {
+  .prose pre {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+
+  /* Inline code */
+  .prose :not(pre) > code {
+    @apply bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 px-1 py-0.5 rounded text-sm font-mono;
+  }
+
+  /* Anchor headings inside articles */
+  .prose .heading-anchor {
+    @apply no-underline text-brand-500 opacity-0 hover:opacity-100 ml-2;
+  }
+
+  .prose h2:hover .heading-anchor,
+  .prose h3:hover .heading-anchor {
+    @apply opacity-100;
+  }
+}

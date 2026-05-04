@@ -1,0 +1,76 @@
+---
+import Header from "@components/global/Header.astro";
+import Footer from "@components/global/Footer.astro";
+import HeadMeta from "@components/global/HeadMeta.astro";
+import siteConfig from "@data/site.config";
+import "@assets/global.css";
+
+interface Props {
+  pageTitle?: string;
+  metaDescription?: string;
+  metaTags?: string | string[];
+  metaImage?: string;
+}
+
+const { pageTitle, metaDescription, metaTags, metaImage } = Astro.props;
+---
+
+<html lang={siteConfig.lang} class="">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Favicons — generate with https://realfavicongenerator.net -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content={siteConfig.themeColorLight} />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content={siteConfig.themeColorDark} />
+
+    <!--
+      FONTS
+      Replace the Google Fonts URL below with the client's fonts.
+      Or remove this link and use @font-face in global.css for self-hosted fonts.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <HeadMeta
+      pageTitle={pageTitle}
+      metaDescription={metaDescription}
+      metaTags={metaTags}
+      metaImage={metaImage}
+    />
+
+    <!-- Prevent FOUC for dark mode -->
+    <script is:inline>
+      const stored = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (stored === "dark" || (!stored && prefersDark)) {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
+  </head>
+
+  <body class="bg-[#faf9f7] text-slate-800 antialiased">
+    <Header />
+
+    <main class="flex-grow">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <script>
+      import "../scripts/menu.js";
+    </script>
+  </body>
+</html>
